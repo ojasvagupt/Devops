@@ -130,8 +130,8 @@
   ```
   **Output:**
   ```
-    1  ls   
-    2  pwd   
+    1  ls
+    2  pwd
     3  cd
   ```
   ```
@@ -145,78 +145,140 @@
 ## File & Directory Management
 
 - **mkdir abc** : Create single directory.
+
   ```
-  $ ls (before: no abc)
-  $ mkdir abc
-  $ ls (after: abc dir created)
+  user@host:~$ ls
+  (no output - empty dir)
+  user@host:~$ mkdir abc
+  user@host:~$ ls
+  abc
+  user@host:~$
   ```
+
 - **mkdir abc xyz pqr** : Create multiple directories.
+
   ```
-  $ ls (before: no dirs)
-  $ mkdir abc xyz pqr
-  $ ls (after: abc xyz pqr created)
+  user@host:~$ ls
+  (no output - empty dir)
+  user@host:~$ mkdir abc xyz pqr
+  user@host:~$ ls
+  abc  pqr  xyz
+  user@host:~$
   ```
+
 - **mkdir -p /abc/pqr/xyz** : Create with parents, no error if exists.
+
   ```
-  $ mkdir -p /abc/pqr/xyz
+  user@host:~$ mkdir -p /tmp/abc/pqr/xyz
+  user@host:~$ ls /tmp/abc
+  pqr
+  user@host:~$ ls /tmp/abc/pqr
+  xyz
+  user@host:~$
   ```
-  **Effect:** creates nested dirs abc/pqr/xyz
+
+  **Effect:** creates all parent directories automatically
+
 - **touch file.txt** : Create empty file or update timestamp.
+
   ```
-  $ ls (before: no file)
-  $ touch file.txt
-  $ ls (after: file.txt 0 bytes)
+  user@host:~$ ls
+  (no output)
+  user@host:~$ touch file.txt
+  user@host:~$ ls
+  file.txt
+  user@host:~$ ls -l file.txt
+  -rw-r--r-- 1 user group 0 date file.txt
+  user@host:~$
   ```
+
 - **rm -rvf abc** : Remove dir recursive verbose force.
+
   ```
-  $ mkdir test; ls (before: test dir)
-  $ rm -rvf test (r=recursive v=verbose f=force)
-  $ ls (after: test gone)
+  user@host:~$ mkdir test
+  user@host:~$ touch test/file.txt
+  user@host:~$ ls test
+  file.txt
+  user@host:~$ rm -rvf test
+  removed 'test/file.txt'
+  removed directory 'test'
+  user@host:~$ ls test
+  ls: cannot access 'test': No such file or directory
+  user@host:~$
   ```
+
+  **Flags:** -r (recursive), -v (verbose), -f (force, no prompt)
+
 - **cp -rvf src dest** : Copy recursive verbose force.
+
   ```
-  $ mkdir src; echo "hi" > src/file.txt; ls src (before)
-  $ cp -rvf src dest
-  $ ls dest (after: dest/src/file.txt)
+  user@host:~$ mkdir src
+  user@host:~$ echo "source content" > src/file.txt
+  user@host:~$ ls src
+  file.txt
+  user@host:~$ cp -rvf src dest
+  'src/' -> 'dest/src'
+  'src/file.txt' -> 'dest/src/file.txt'
+  user@host:~$ ls -R dest
+  dest:
+  src
+
+  dest/src:
+  file.txt
+  user@host:~$
   ```
+
 - **mv src dest** : Move or rename file/dir.
+
   ```
-  $ mkdir old; ls (before: old)
-  $ mv old new
-  $ ls (after: new, old gone)
+  user@host:~$ mkdir old
+  user@host:~$ ls
+  old
+  user@host:~$ mv old new
+  user@host:~$ ls
+  new
+  user@host:~$
   ```
+
 - **cat file** : Display file content.
+
   ```
-  $ echo "hello" > test.txt
-  $ cat test.txt
+  user@host:~$ echo "hello world" > test.txt
+  user@host:~$ cat test.txt
+  hello world
+  user@host:~$
   ```
-  **Output:**
-  ```
-  hello
-  ```
+
 - **echo "text" > file** : Write/overwrite file.
+
   ```
-  $ echo "hello" > test.txt
-  $ cat test.txt (after: hello)
+  user@host:~$ echo "hello" > test.txt
+  user@host:~$ cat test.txt
+  hello
+  user@host:~$
   ```
+
 - **head -n 5 file** : Show first 5 lines.
+
   ```
-  $ seq 10 > lines.txt
-  $ head -5 lines.txt
-  ```
-  **Output:**
-  ```
+  user@host:~$ seq 10 > lines.txt
+  user@host:~$ head -5 lines.txt
   1
   2
   3
   4
   5
+  user@host:~$
   ```
+
 - **tail -f file** : Show last lines, follow live.
   ```
-  $ tail -f /var/log/syslog
+  user@host:~$ tail -f /var/log/syslog
+  Oct 10 12:00:01 host systemd[1]: Started My Service.
+  (press Ctrl+C to stop following)
+  user@host:~$
   ```
-  **Effect:** follows log updates in real-time
+  **Effect:** shows last 10 lines and follows new log entries in real-time
 
 ## Search & Text Processing
 
@@ -278,46 +340,73 @@
 
 ## Users & Permissions
 
+| Number | Permission Type        | Symbol |
+| ------ | ---------------------- | ------ |
+| 0      | No permission          | ---    |
+| 1      | Execute only           | --x    |
+| 2      | Write only             | -w-    |
+| 3      | Write + Execute        | -wx    |
+| 4      | Read only              | r--    |
+| 5      | Read + Execute         | r-x    |
+| 6      | Read + Write           | rw-    |
+| 7      | Read + Write + Execute | rwx    |
+
 - **useradd username** : Add user.
   ```
-  $ sudo useradd devops
+  user@host:~$ sudo useradd devops
+  user@host:~$
   ```
-  **Effect:** creates devops user
+  **Effect:** creates devops user (check with `id devops`)
 - **passwd user** : Set password.
   ```
-  $ sudo passwd devops
+  user@host:~$ sudo passwd devops
+  Enter new UNIX password:
+  Retype new UNIX password:
+  passwd: password updated successfully
+  user@host:~$
   ```
-  **Effect:** prompts for password
+  **Effect:** prompts for password twice
 - **sudo usermod -aG group user** : Add to group.
   ```
-  $ sudo usermod -aG sudo devops
+  user@host:~$ sudo usermod -aG sudo devops
+  user@host:~$ groups devops
+  devops : devops sudo
+  user@host:~$
   ```
-  **Effect:** adds devops to sudo group (log out/in)
+  **Effect:** adds to sudo group (log out/in to take effect)
 - **ls -ld dir** : Dir permissions.
   ```
-  $ ls -ld /home
+  user@host:~$ ls -ld /home
+  drwxr-xr-x 2 user group 4096 Oct 10 12:00 /home
+  user@host:~$
   ```
-  **Output:** drwxr-xr-x 2 user group 4096 date /home
-- **Permissions**:
-  Symbolic: `drwx rwx rwx` (d=dir, owner group other; r=read w=write x=exec)
-  Numeric: 4=r 2=w 1=x → 755 = rwxr-xr-x
 - **chmod 755 file** : Numeric perms.
   ```
-  $ ls -l script.sh (before: 644)
-  $ chmod 755 script.sh
-  $ ls -l (after: rwxr-xr-x)
+  user@host:~$ ls -l script.sh
+  -rw-r--r-- 1 user group 1024 Oct 10 script.sh
+  user@host:~$ chmod 755 script.sh
+  user@host:~$ ls -l script.sh
+  -rwxr-xr-x 1 user group 1024 Oct 10 script.sh
+  user@host:~$
   ```
 - **chown user:group file** : Owner change.
   ```
-  $ ls -l app.py (before: root:root)
-  $ sudo chown devops:devops app.py
-  $ ls -l (after: devops:devops)
+  user@host:~$ ls -l app.py
+  -rw-r--r-- 1 root root 2048 Oct 10 app.py
+  user@host:~$ sudo chown devops:devops app.py
+  user@host:~$ ls -l app.py
+  -rw-r--r-- 1 devops devops 2048 Oct 10 app.py
+  user@host:~$
   ```
 - **sudo** : Run as superuser.
   ```
-  $ sudo apt update
+  user@host:~$ sudo apt update
+  [sudo] password for user:
+  Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease
+  ...
+  user@host:~$
   ```
-  **Effect:** elevates privileges
+  **Effect:** elevates privileges (password prompt first time)
 
 ## Package Management
 
@@ -335,4 +424,3 @@
   ```
   $ sudo apt-get update
   ```
-

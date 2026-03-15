@@ -62,31 +62,68 @@ git mv old new           # Rename
 git submodule update --init
 ```
 
-## Merge vs Rebase Scenarios
+## Merge vs Rebase - Scenarios & Flows
 
-### Merge (preserves history)
+### Scenario 1: Feature to Main (PR Workflow)
 
-- **Use when**: Official merge to main/release (PR merge).
-- Example:
-  ```
-  * b---c feature
-   \
-    a---d main (merge commit)
-  ```
-- `git merge --no-ff feature` - Creates merge commit for traceability.
+**Merge Flow** (Recommended for protected main):
 
-### Rebase (linear history)
+```
+* b---c feature
+ \
+  a---d main --- M (merge commit)
+```
 
-- **Use when**: Local feature cleanup before PR, shared branch sync.
-- Example:
-  ```
-  a---b---c main
-      \
-       d---e feature -> rebase to a---d'--e' feature (linear)
-  ```
-- `git rebase main` then `git push --force-with-lease`.
-- **Danger**: Never rebase shared/public commits.
+```
+git checkout main
+git pull
+git merge --no-ff feature-branch
+git push
+```
 
-**DevOps tip**: Rebase for clean PRs, merge for production releases.
+- Preserves original branch timeline.
 
-See full guide in README.md
+**Rebase Flow** (Clean PR):
+
+```
+a---b---c main
+    \
+     d---e feature
+```
+
+```
+git checkout feature-branch
+git rebase main  # resolves conflicts now
+git push --force-with-lease
+```
+
+- Linear history.
+
+### Scenario 2: Hotfix Backport
+
+**Cherry-pick + Merge**:
+
+```
+main: a---b---c
+     \
+release: a---d
+```
+
+```
+git checkout release
+git cherry-pick hotfix-commit
+git merge --no-ff main
+```
+
+### Scenario 3: Shared Team Branch Sync
+
+**Rebase** (if teammate pushed):
+
+```
+git fetch origin
+git rebase origin/shared-branch  # replay your changes on top
+git push --force-with-lease
+```
+
+
+

@@ -1,212 +1,109 @@
-# Top Git Commands for DevOps
+# Top Git Commands for DevOps - Simple Explanations
 
-Git is essential for version control, collaboration, and CI/CD pipelines in DevOps. This guide covers top commands with short descriptions, key flags, and practical DevOps examples.
+## Setup
 
-## 1. Setup & Initialization
+**git init**  
+Creates a new Git repository in current directory by initializing .git folder. Use for new projects. Bare (--bare) for central servers.
 
-| Command    | Description                            | DevOps Example |
-| ---------- | -------------------------------------- | -------------- |
-| `git init` | Initialize a new local Git repository. | ```            |
+**git clone <url>**  
+Copies a remote repository to local machine with full history. Use --depth 1 for shallow/fast CI clones.
 
-$ git init
-Initialized empty Git repository in /path/to/repo/
-$ git init repo
+**git config**  
+Sets Git options like user name/email. Global (--global) for all repos, local for current repo.
 
-````
-<br>Init standard repo or bare for CI hooks. |
+## Branching
 
-| `git clone <url>` | Clone a repository into a new directory. |
-$ git clone https://github.com/user/repo.git
+**git branch**  
+Lists, creates, deletes branches. -l local, -r remote, -d delete merged.
 
-````
+**git checkout -b <branch>**  
+Creates and switches to new branch. Use for features/hotfixes.
 
-| `git config` | Get/set repository or global options. | `--global`<br>`--local`<br>`--list`<br>`--show-origin` | ```
-$ git config --global user.name "DevOps Bot"
-$ git config --global user.email "devops@company.com"
-$ git config --list
+**git switch <branch>**  
+Switches to existing branch (Git 2.23+).
 
-````
-<br>Configure identity for pipeline commits. |
+**git merge <branch>**  
+Integrates changes from branch into current. --no-ff preserves history.
 
+**git rebase <base>**  
+Replays commits from current branch on top of base branch for linear history. -i for interactive edit/squash.
 
-## 2. Branching & Merging
+## Remotes
 
-| Command        | Description                  | Key Flags                                  | DevOps Example                                                                           |
-| -------------- | ---------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| `git branch`   | List/create/delete branches. | `-l` (local), `-r` (remote), `-d` (delete) | `git branch -d feature/old`<br>Delete merged feature branch post-PR in GitHub Actions.   |
-| `git checkout` | Switch branches/create.      | `-b <new>` (create+switch), `-B` (force)   | `git checkout -b hotfix/bug123`<br>Create hotfix branch for urgent prod deploy.          |
-| `git switch`   | Switch branches (modern).    | `-c <new>` (create)                        | `git switch -c release/v1.2`<br>Switch to new release branch for tagging.                |
-| `git merge`    | Merge branch into current.   | `--no-ff` (no fast-forward), `--ff-only`   | `git merge --no-ff main`<br>Merge feature with explicit commit for audit trail.          |
-| `git rebase`   | Reapply commits on new base. | `-i` (interactive), `--interactive`, `main` | ```
-$ git rebase main feature-branch
-$ git rebase -i HEAD~3  # reorder/squash/drop
-```
-Detailed: Interactive rebase to squash commits:
-1. `git rebase -i main` → editor opens with commits.
-2. Change 'pick' to 'squash'/'drop'.
-3. Save, edit messages.
-<br>Linear history for main. |
+**git remote add origin <url>**  
+Adds remote repository named origin for push/pull.
 
+**git remote -v**  
+Lists remotes with URLs.
 
-## 3. Remotes & Collaboration
+**git fetch**  
+Downloads changes from remote without merging. --prune removes deleted remotes.
 
-| Command      | Description           | Key Flags                                 | DevOps Example                                                                                                        |
-| ------------ | --------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `git remote add origin <url>` | Add remote repository origin. | `add <name> <url>`, `rename`, `remove` | ```
-$ git remote add origin https://github.com/user/repo.git
-$ git remote -v
-origin  https://github.com/user/repo.git (fetch)
-origin  https://github.com/user/repo.git (push)
-```
-<br>Setup origin for push/PRs in new repo. |
-| `git remote -v` | List remotes verbose. | `-v` | See output above.<br>List remotes before fetch/pull. |
+**git pull**  
+Fetch + merge/rebase. Use --rebase to avoid merge commits.
 
-| `git fetch`  | Fetch remote changes. | `--all`, `--prune`                        | `git fetch --prune origin`<br>Clean stale remote branches in cron job.                                                |
-| `git pull`   | Fetch+merge.          | `--rebase` (avoid merge commits)          | `git pull --rebase origin main`<br>Update local main without extra merges in dev env.                                 |
-| `git push`   | Push commits.         | `-u` (set upstream), `--force-with-lease` | `git push -u origin feature/new`<br>Set upstream & push new feature for PR.                                           |
+**git push**  
+Uploads local branches/commits to remote. -u sets upstream, --force-with-lease safe force.
 
+## Staging & Commit
 
-## 5. Staging & Committing
+**git status**  
+Shows working directory state: staged, unstaged, untracked files.
 
-| Command | Description | Key Flags | DevOps Example |
-|---------|-------------|-----------|----------------|
-| `git add` | Add file contents to staging area. | `<file>` (specific), `.` (all), `-A` (all incl. delete), `-u` (updated) | ```
-$ git status
-new.txt
-$ git add new.txt
-$ git add .
-$ git add -A
-````
+**git add <file>**  
+Stages specific file for commit. . for all, -A all changes incl deletes.
 
-<br>Stage files before commit in CI. |
-| `git commit` | Record staged changes to repo. | `-m <msg>`, `-a` (stage+commit), `--amend` | ```
-$ git commit -m "feat: add auth"
-$ git commit -a -m "fix: typo"
-$ git commit --amend --no-edit
+**git commit**  
+Records staged snapshot. -m message, --amend edit last.
 
-````
-<br>Commit with conventional messages for semantic release. |
+## Inspect
 
-## 6. Inspect & Status
+**git log**  
+Shows commit history. --oneline short, --graph visual.
 
-| Command      | Description              | Key Flags                                          | DevOps Example |
-| ------------ | ------------------------ | -------------------------------------------------- | -------------- |
-| `git status` | Show working dir status. | `-s` (short), `-b` (branch)                        | ```
-$ git status -s
- M file1
-?? file2
-````
+**git diff**  
+Shows unstaged changes. --staged for staged vs commit.
 
-<br>Quick check in pre-commit hook. |
-| `git log` | View commit history. | `--oneline`, `--graph`, `-n 5`, `--author` | ```
-$ git log --oneline -n 5 --graph
+**git show <commit>**  
+Displays specific commit details/changes.
 
-````
-<br>Audit changes post-deploy. |
-| `git diff`   | Show unstaged/staged changes. | `HEAD`, `--staged`, `--cached`                    | ```
-$ git diff
-$ git diff --staged
-````
+## Undo
 
-<br>Review diffs in PR. |
-| `git show` | Show object (commit/tag/file). | `<commit>` | ```
-$ git show abc123
+**git reset <commit>**  
+Moves HEAD. --soft keeps staged, --hard discards all.
 
-````
-<br>Inspect commit details. |
+**git revert <commit>**  
+Creates new commit undoing target (safe for shared).
 
+**git clean -fd**  
+Removes untracked files/dirs.
 
+**git stash**  
+Saves WIP changes. list/pop/apply/drop.
 
-## 6. Undo & Reset
+## File Ops
 
-| Command      | Description             | Key Flags                                   | DevOps Example                                                                              |
-| ------------ | ----------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `git reset`  | Reset current HEAD to specified commit. | `--soft` (keep index), `--mixed` (default, unstage), `--hard` (discard all) | ```
-$ git reset --soft HEAD~1
-$ git reset --hard origin/main
-````
+**git rm <file>**  
+Removes from working/staging. --cached untracks only.
 
-<br>Undo commits or sync with remote. |
+**git mv <old> <new>**  
+Renames/moves and stages automatically.
 
-| `git revert` | Create revert commit. | `-m` (for merges) | `git revert abc123`<br>Safe undo pushed commit via new commit for main branch. |
-| `git clean` | Remove untracked files. | `-f` (force), `-d` (dirs) | `git clean -fd`<br>Clean build artifacts in CI workspace. |
-| `git stash` | Temporarily save changes. | `push [-m msg]`, `list`, `pop`, `apply`, `drop` | ```
-$ git stash push -m "WIP"
-$ git stash list
-$ git stash pop
+## Advanced
 
-````
-<br>Switch contexts in shared env. |
+**git cherry-pick <commit>**  
+Applies specific commit to current branch (backport).
 
+**git tag -a <tag>**  
+Creates annotated tag for releases.
 
-## 7. File Operations
+**Shared Branch Steps** (if others pushed):
 
-| Command | Description | Key Flags | DevOps Example |
-|---------|-------------|-----------|----------------|
-| `git rm` | Remove files from working dir and staging. | `--cached` (untrack only) | ```
-$ git rm oldfile.txt
-$ git rm --cached secret.key
-````
+1. git fetch origin
+2. git rebase origin/branch (resolve conflicts)
+3. git push --force-with-lease
 
-<br>Clean obsolete config files. |
-| `git mv` | Move/rename file and stage. | N/A | ```
-$ git mv README.md README.md.bak
+**Merge vs Rebase**:
 
-````
-<br>Rename in migration scripts. |
-
-## 8. Cherry-pick & Advanced
-
-| Command | Description | Key Flags | DevOps Example |
-|---------|-------------|-----------|----------------|
-| `git cherry-pick <commit>` | Apply specific commit from other branch. | `-e` (edit), `-x` (source cite) | ```
-$ git cherry-pick abc123
-$ git cherry-pick -x def456
-````
-
-<br>Backport hotfix to release branch. |
-
-
-## Git Cheat Sheet
-
-```
-
-# Quick Status & Sync
-
-git status && git pull --rebase && git push
-
-# New Feature Workflow
-
-git checkout -b feature/xyz
-
-# ... develop ...
-
-git add . && git commit -m \"feat: add xyz\" && git push -u origin feature/xyz
-
-# Release
-
-git checkout main && git pull && git checkout -b release/vX.Y
-git merge --no-ff feature/\* && git tag -a vX.Y -m \"Release\" && git push --tags
-
-```
-
-## Best Practices in DevOps
-
-- Use branch protection rules (main requires PRs).
-- Conventional commits for semantic versioning.
-- Signed commits/tags for security.
-- Shallow clones + single-branch in CI for speed.
-
-Resources: [Git Docs](https://git-scm.com/docs), [GitHub Flow](https://docs.github.com/en/get-started).
-
-Updated: Generated for DevOps workflows.
-
-```
-
-```
-
-```
-
-```
-
-```
+- Merge: Preserves exact history (use for PRs to main).
+- Rebase: Linear (use for feature cleanup before PR).

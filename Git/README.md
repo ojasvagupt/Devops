@@ -4,24 +4,21 @@ Git is essential for version control, collaboration, and CI/CD pipelines in DevO
 
 ## 1. Setup & Initialization
 
-| Command    | Description                            | Key Flags                                                           | DevOps Example |
-| ---------- | -------------------------------------- | ------------------------------------------------------------------- | -------------- |
-| `git init` | Initialize a new local Git repository. | `--bare`<br>`--initial-branch=<name>`<br>`--shared[=<permissions>]` | ```            |
+| Command    | Description                            | DevOps Example |
+| ---------- | -------------------------------------- | -------------- |
+| `git init` | Initialize a new local Git repository. | ```            |
 
 $ git init
 Initialized empty Git repository in /path/to/repo/
-$ git init --bare /shared/repo.git
+$ git init repo
 
 ````
 <br>Init standard repo or bare for CI hooks. |
 
-| `git clone <url>` | Clone a repository into a new directory. | `--depth <n>`<br>`-b <branch>`<br>`--single-branch`<br>`--recursive` | ```
+| `git clone <url>` | Clone a repository into a new directory. |
 $ git clone https://github.com/user/repo.git
-$ cd repo
-$ git clone --depth 1 --single-branch -b main https://github.com/org/project.git /tmp/project
-````
 
-<br>Full clone or shallow/single-branch for CI speed. |
+````
 
 | `git config` | Get/set repository or global options. | `--global`<br>`--local`<br>`--list`<br>`--show-origin` | ```
 $ git config --global user.name "DevOps Bot"

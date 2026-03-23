@@ -119,8 +119,23 @@ There are three important things,
 
 
 
-### Understanding the terminology (Inspired from Docker Docs)
+### Understanding the terminology
 
+## Docker Command Flow (Step-by-Step)
+
+1. You type a command (`docker run`, `docker push`, etc.)
+
+2. Docker Client converts it → REST API request
+
+3. Sends request to Docker Daemon via:
+   - Unix socket (`/var/run/docker.sock`)  
+   - OR TCP (remote daemon)
+
+4. Docker Daemon:
+   - Processes the request  
+   - Talks to OS / Docker Registry  
+
+5. Response comes back → shown in terminal
 
 #### Docker daemon
 
@@ -134,7 +149,7 @@ The Docker client (docker) is the primary way that many Docker users interact wi
 
 #### Docker Desktop
 
-Docker Desktop is an easy-to-install application for your Mac, Windows or Linux environment that enables you to build and share containerized applications and microservices. Docker Desktop includes the Docker daemon (dockerd), the Docker client (docker), Docker Compose, Docker Content Trust, Kubernetes, and Credential Helper. For more information, see Docker Desktop.
+Docker Desktop is an easy-to-install application for your Mac, Windows or Linux environment that enables you to build and share containerized applications and microservices. Docker Desktop includes the Docker daemon (dockerd), the Docker client (docker), Docker Compose, Docker Content Trust, Kubernetes, and Credential Helper.
 
 
 #### Docker registries

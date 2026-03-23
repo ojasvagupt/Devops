@@ -1,4 +1,4 @@
-# Repo to learn Docker with examples. Contributions are most welcome.
+# Docker Repo for leaning purpose...
 
 
 ## What is a container ?

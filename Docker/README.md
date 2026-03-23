@@ -137,15 +137,69 @@ There are three important things,
 
 5. Response comes back → shown in terminal
 
-#### Docker daemon
+## 🐳 Docker Daemon
 
-The Docker daemon (dockerd) listens for Docker API requests and manages Docker objects such as images, containers, networks, and volumes. A daemon can also communicate with other daemons to manage Docker services.
+### What is Docker Daemon?
+
+The **Docker Daemon (`dockerd`)** is a background service that runs on your system and is responsible for managing Docker objects.
+
+It:
+- Listens for API requests  
+- Manages containers, images, networks, and volumes  
+- Communicates with the operating system and Docker registries  
+
+---
+
+### 🧠 Simple Definition
+
+> Docker Daemon = the engine that runs and manages everything in Docker
+
+---
+
+### 🔧 Responsibilities
+
+#### 1. Build Images
+- Reads Dockerfile instructions  
+- Creates Docker images  
+
+#### 2. Run Containers
+- Creates and starts containers  
+- Handles lifecycle (start, stop, delete)
+
+#### 3. Manage Resources
+- Containers  
+- Images  
+- Networks  
+- Volumes  
+
+#### 4. Communicate with Registry
+- Pull images (`docker pull`)  
+- Push images (`docker push`)  
+
+#### 5. Interact with OS
+- Uses:
+  - Namespaces (process isolation)  
+  - cgroups (resource management)
 
 
-#### Docker client
+## 🐳 Docker Client 
 
-The Docker client (docker) is the primary way that many Docker users interact with Docker. When you use commands such as docker run, the client sends these commands to dockerd, which carries them out. The docker command uses the Docker API. The Docker client can communicate with more than one daemon.
+The **Docker Client** is the command-line interface (CLI) that users interact with.
 
+#### What it does:
+- Accepts user commands (`docker run`, `docker push`, etc.)
+- Converts commands into **REST API requests**
+- Sends requests to the Docker Daemon
+- Displays output back to the user
+
+#### Example:
+```bash
+docker run nginx
+
+
+🧠 Summary
+
+Docker Client sends commands → Docker Daemon executes them → results are returned to the user
 
 #### Docker Desktop
 
